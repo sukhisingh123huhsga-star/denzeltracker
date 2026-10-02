@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DENZEL STUDY AND JEE TRACKER</title>
+    <style>
+        :root {
+            --bg-color: #060b13;
+            --panel-bg: #0c1524;
+            --cyan: #00f3ff;
+            --blue: #0088ff;
+            --purple: #9d00ff;
+            --text: #d1f4ff;
+            --border: #142c47;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
+        body { background-color: var(--bg-color); color: var(--text); padding: 20px; }
+        header { border-bottom: 2px solid var(--cyan); padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 15px rgba(0,243,255,0.2); }
+        h1 { color: var(--cyan); text-shadow: 0 0 8px rgba(0,243,255,0.5); font-size: 24px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        .panel { background: var(--panel-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; position: relative; box-shadow: inset 0 0 10px rgba(0,136,255,0.1); }
+        .panel::before { content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 10px; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+        h2 { color: var(--blue); font-size: 18px; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; margin-bottom: 5px; color: var(--cyan); }
+        input, select, button { width: 100%; background: #04080f; border: 1px solid var(--border); padding: 8px; color: var(--text); border-radius: 2px; }
+        input:focus, select:focus { border-color: var(--cyan); outline: none; }
+        button { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--cyan); cursor: pointer; font-weight: bold; color: var(--cyan); transition: 0.2s; }
+        button:hover { background: var(--cyan); color: var(--bg-color); box-shadow: 0 0 10px var(--cyan); }
+        .list-container { max-height: 200px; overflow-y: auto; margin-top: 10px; }
+        .item-row { display: flex; justify-content: space-between; background: rgba(20, 44, 71, 0.4); padding: 8px; margin-bottom: 5px; border-left: 3px solid var(--purple); font-size: 13px; }
+        .subject-tag { padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+        .phy { background: rgba(0, 136, 255, 0.2); color: #33a3ff; border: 1px solid #33a3ff; }
+        .chem { background: rgba(157, 0, 255, 0.2); color: #c466ff; border: 1px solid #c466ff; }
+        .math { background: rgba(0, 243, 255, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>CORE//DENZEL_STUDY_AND_JEE_TRACKER</h1>
+            <small style="color: #6292b5;">STATUS: OPERATIONAL | USER: DENZEL | LOCAL_DB: ACTIVE</small>
+        </div>
+        <div id="stats" style="text-align: right; color: var(--cyan); font-weight: bold;">
+            TOTAL STUDY TIME: <span id="total-hours-head">0</span> HRS
+        </div>
+    </header>
+
+    <div class="grid">
+        <!-- STUDY HOUR LOG -->
+        <div class="panel">
+            <h2> STUDY LOG ENGINE</h2>
+            <div class="form-group">
+                <label>SUBJECT</label>
+                <select id="study-subj">
+                    <option value="Physics">PHYSICS</option>
+                    <option value="Chemistry">CHEMISTRY</option>
+                    <option value="Mathematics">MATHEMATICS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>LESSON / TOPIC NAME</label>
+                <input type="text" id="study-topic" placeholder="e.g., Rotational Mechanics">
+            </div>
+            <div class="form-group">
+                <label>DURATION (HOURS)</label>
+                <input type="number" id="study-duration" step="0.5" min="0" placeholder="e.g., 2.5">
+            </div>
+            <button onclick="logStudy()">COMMIT LOG TO SYSTEM</button>
+            
+            <div class="list-container" id="study-logs-list"></div>
+        </div>
+
+        <!-- TEST MARKS ENGINE -->
+        <div class="panel">
+            <h2> JEE MAIN TEST LOG</h2>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 10px; padding: 0;">
+                <div class="form-group">
+                    <label>SUBJECT</label>
+                    <select id="test-subj">
+                        <option value="Physics">PHYSICS</option>
+                        <option value="Chemistry">CHEMISTRY</option>
+                        <option value="Mathematics">MATHEMATICS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>TEST NAME</label>
+                    <input type="text" id="test-name" placeholder="Ch-1 Part Test">
+                </div>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 10px; padding: 0;">
+                <div class="form-group">
+                    <label>CORRECT ANSWERS (+4)</label>
+                    <input type="number" id="test-correct" min="0">
+                </div>
+                <div class="form-group">
+                    <label>INCORRECT ANSWERS (-1)</label>
+                    <input type="number" id="test-wrong" min="0">
+                </div>
+            </div>
+            <button onclick="logTest()">CALCULATE & RECORD SCORE</button>
+
+            <div class="list-container" id="test-logs-list"></div>
+        </div>
+    </div>
+
+    <script>
+        let studyLogs = JSON.parse(localStorage.getItem('jarvis_study')) || [];
+        let testLogs = JSON.parse(localStorage.getItem('jarvis_tests')) || [];
+
+        function updateUI() {
+            const studyList = document.getElementById('study-logs-list');
+            studyList.innerHTML = '';
+            let totalHours = 0;
+            studyLogs.forEach(log => {
+                totalHours += parseFloat(log.hours);
+                let cls = log.subj === 'Physics' ? 'phy' : log.subj === 'Chemistry' ? 'chem' : 'math';
+                studyList.innerHTML += `<div class="item-row">
+                    <span><span class="subject-tag ${cls}">${log.subj.toUpperCase()}</span> ${log.topic}</span>
+                    <span style="color:var(--cyan)">${log.hours} HRS</span>
+                </div>`;
+            });
+            document.getElementById('total-hours-head').innerText = totalHours.toFixed(1);
+
+            const testList = document.getElementById('test-logs-list');
+            testList.innerHTML = '';
+            testLogs.forEach(log => {
+                let cls = log.subj === 'Physics' ? 'phy' : log.subj === 'Chemistry' ? 'chem' : 'math';
+                testList.innerHTML += `<div class="item-row">
+                    <span><span class="subject-tag ${cls}">${log.subj.toUpperCase()}</span> ${log.name}</span>
+                    <span style="color:#ff3366">SCORE: ${log.score}</span>
+                </div>`;
+            });
+        }
+
+        function logStudy() {
+            const subj = document.getElementById('study-subj').value;
+            const topic = document.getElementById('study-topic').value || 'General Study';
+            const hours = document.getElementById('study-duration').value;
+            if(!hours) return alert('Enter hours!');
+            
+            studyLogs.unshift({ subj, topic, hours });
+            localStorage.setItem('jarvis_study', JSON.stringify(studyLogs));
+            updateUI();
+            document.getElementById('study-topic').value = '';
+            document.getElementById('study-duration').value = '';
+        }
+
+        function logTest() {
+            const subj = document.getElementById('test-subj').value;
+            const name = document.getElementById('test-name').value || 'Mock Test';
+            const correct = parseInt(document.getElementById('test-correct').value) || 0;
+            const wrong = parseInt(document.getElementById('test-wrong').value) || 0;
+            
+            const score = (correct * 4) - (wrong * 1);
+            
+            testLogs.unshift({ subj, name, score });
+            localStorage.setItem('jarvis_tests', JSON.stringify(testLogs));
+            updateUI();
+            
+            document.getElementById('test-name').value = '';
+            document.getElementById('test-correct').value = '';
+            document.getElementById('test-wrong').value = '';
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
